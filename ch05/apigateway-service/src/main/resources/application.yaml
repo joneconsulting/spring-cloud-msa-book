@@ -1,0 +1,46 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: apigateway-service
+  cloud:
+    gateway:
+      server:
+        webflux:
+          default-filters:
+            - name: LoggingFilter
+              args:
+                baseMessage: Spring Cloud Gateway WebFlux Global Filter
+                preLogger: true
+                postLogger: true
+          routes:
+          - id: helloworld-welcome                # 라우트 ID (식별자)
+            uri: http://localhost:8088/           # 대상 서비스 URI
+            predicates:
+              - Path=/helloworld/welcome          # 프레디킷: 경로가 /helloworld/welcome 인 경우 uri로 매핑
+            filters:
+              - StripPrefix=2
+              - name: JwtAuthFilter
+          - id: helloworld-check
+            uri: lb://helloworld
+            predicates:
+              - Path=/helloworld/check
+          - id: helloworld-message
+            uri: http://localhost:8088/
+            predicates:
+              - Path=/helloworld/message
+            filters:
+              - AddRequestHeader=hello-request, authorized
+              - AddResponseHeader=hello-response, welcome-message
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+token:
+  secret: my-secret-key-my-secret-key-my-secret-key  # 변경가능합니다.
