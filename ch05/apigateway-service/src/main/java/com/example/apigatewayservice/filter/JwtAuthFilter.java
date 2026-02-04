@@ -1,7 +1,8 @@
 package com.example.apigatewayservice.filter;
 
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -17,19 +18,21 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 
 @Component
 @Slf4j
 public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Config> {
-    private final Environment env;
+    Environment env;
+
     public JwtAuthFilter(Environment env) {
         super(Config.class);
         this.env = env;
     }
 
     public static class Config {
-        // 필요 시 확장(예: 제외 경로, 헤더명 등)
+        // Put configuration properties here
     }
 
     @Override
@@ -39,21 +42,23 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
 
             String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                return onError(exchange, HttpStatus.UNAUTHORIZED, "Invalid Authorization format");
+                return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
             }
 
-            String jwt = authHeader.replace("Bearer ", "").trim();
+            String jwt = authHeader.replace("Bearer ", "");
+
             if (!isJwtValid(jwt)) {
-                return onError(exchange, HttpStatus.UNAUTHORIZED, "Invalid JWT token");
+                return onError(exchange, "The JWT is invalid", HttpStatus.UNAUTHORIZED);
             }
 
             return chain.filter(exchange);
         };
     }
 
-    private Mono<Void> onError(ServerWebExchange exchange, HttpStatus status, String message) {
+    private Mono<Void> onError(ServerWebExchange exchange, String message, HttpStatus httpStatus) {
         ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(status);
+        response.setStatusCode(httpStatus);
+        log.error(message);
 
         byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
         DataBuffer buffer = response.bufferFactory().wrap(bytes);
@@ -61,21 +66,27 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
     }
 
     private boolean isJwtValid(String jwt) {
+        byte[] secretKeyBytes = env.getProperty("token.secret").getBytes();
+        SecretKey signingKey = new SecretKeySpec(secretKeyBytes, SignatureAlgorithm.HS512.getJcaName());
+
+        boolean returnValue = true;
+        String subject = null;
+
         try {
-            String secret = env.getProperty("token.secret");
-            if (secret == null || secret.isBlank()) return false;
+            JwtParser jwtParser = Jwts.parser()
+                    .setSigningKey(signingKey)
+                    .build();
 
-            SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-
-            Jwts.parser()
-                    .verifyWith(key)
-                    .build()
-                    .parseSignedClaims(jwt);
-
-            return true;
-        } catch (Exception e) {
-            return false;
+            subject = jwtParser.parseClaimsJws(jwt).getBody().getSubject();
+        } catch (Exception ex) {
+            returnValue = false;
         }
+
+        if (subject == null || subject.isEmpty()) {
+            returnValue = false;
+        }
+
+        return returnValue;
     }
 
 }
