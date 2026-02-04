@@ -8,8 +8,8 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
-token:
-  secret: my-jwt-key-my-jwt-key-my-jwt-key # 변경가능합니다.
+jwt:
+  token: my-jwt-key-my-jwt-key-my-jwt-key # 변경가능합니다.
 
 
 spring:
