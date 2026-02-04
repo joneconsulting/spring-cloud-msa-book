@@ -9,7 +9,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 
 token:
-  secret: my-secret-key-my-secret-key-my-secret-key # 변경가능합니다.
+  secret-key: my-secret-key-my-secret-key-my-secret-key # 변경가능합니다. 
 
 
 spring:
