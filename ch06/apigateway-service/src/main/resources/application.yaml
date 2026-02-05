@@ -8,7 +8,8 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
-
+jwt:
+  jwt-xhzms: abcsedfghijklmnopqrstuvwxyz0123456789 # 변경가능합니다.
 
 
 spring:

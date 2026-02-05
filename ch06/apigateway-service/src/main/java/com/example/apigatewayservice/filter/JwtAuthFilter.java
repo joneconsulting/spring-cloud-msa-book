@@ -66,7 +66,7 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
     }
 
     private boolean isJwtValid(String jwt) {
-        byte[] secretKeyBytes = env.getProperty("jwt.token").getBytes();
+        byte[] secretKeyBytes = env.getProperty("jwt-xhzms").getBytes();
         SecretKey signingKey = new SecretKeySpec(secretKeyBytes, SignatureAlgorithm.HS512.getJcaName());
 
         boolean returnValue = true;
