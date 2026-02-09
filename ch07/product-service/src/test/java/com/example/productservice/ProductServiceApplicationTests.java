@@ -1,4 +1,4 @@
-package com.example.helloworld;
+package com.example.productservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -6,10 +6,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class HelloworldApplicationTests {
+class ProductServiceApplicationTests {
 
-//	@Test
-//	void contextLoads() {
-//	}
+//    @Test
+//    void contextLoads() {
+//    }
 
 }

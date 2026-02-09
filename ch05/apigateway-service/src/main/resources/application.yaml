@@ -43,4 +43,4 @@ eureka:
     prefer-ip-address: true
 
 token:
-  secret: my-secret-key-my-secret-key-my-secret-key  # 변경가능합니다.
+  key: abcsedfghijklmnopqrstuvwxyz0123456789  # 변경가능합니다.

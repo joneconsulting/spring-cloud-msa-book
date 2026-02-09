@@ -1,0 +1,30 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: git
+  cloud:
+    config:
+      server:
+        git: #default
+          uri: https://github.com/joneconsulting/spring-cloud-msa-book # 설정들이 저장된 Git 리포지토리 경로
+          default-label: main                                      # 기본 브랜치(label)명 (예: main/master)
+          search-paths: config
+#          username: [username]
+#          password: [password]
+#        encrypt:
+#          enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health
+          - beans
+          - info
+          - busrefresh
