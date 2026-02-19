@@ -1,5 +1,5 @@
 greeting:
-  message: This is a simple e-commerceon PROD env. (Config server's application.yaml)
+  message: This is a simple e-commerce on PROD env. (Config server's application.yaml)
 
 gateway:
   ip: 172.18.0.1
