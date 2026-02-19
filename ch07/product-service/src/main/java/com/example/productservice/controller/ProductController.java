@@ -3,6 +3,7 @@ package com.example.productservice.controller;
 import com.example.productservice.model.Product;
 import com.example.productservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,10 @@ public class ProductController {
     Environment env;
     ProductService productService;
 
+    // 컨피그 서버에서 불러온 custom.greeting.message 값을 주입받음
+    @Value("${greeting.message}")
+    private String greetingMessage;
+
     @Autowired
     public ProductController(Environment env, ProductService productService) {
         this.env = env;
@@ -25,8 +30,15 @@ public class ProductController {
 
     @GetMapping("/info")
     public String info() {
-        return String.format("It's working. "
-                + "[ENV] " + env.getProperty("greeting.message"));
+        return String.format("It's working. [Environment 사용] %s. [@Value 사용] %s"
+                , env.getProperty("greeting.message")
+                , greetingMessage);
+    }
+
+    @GetMapping("/default-info")
+    public String defaultInfo() {
+        return String.format("Default application message. %s"
+                , env.getProperty("welcome.message"));
     }
 
     // 전체 상품 목록 조회

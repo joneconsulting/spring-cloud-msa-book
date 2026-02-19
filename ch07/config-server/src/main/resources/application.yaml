@@ -5,11 +5,12 @@ spring:
   application:
     name: config-server
   profiles:
-    active: git
+#    active: git
+    active: native
   cloud:
     config:
       server:
-        git: #default
+        git:
           uri: https://github.com/joneconsulting/spring-cloud-msa-book # 설정들이 저장된 Git 리포지토리 경로
           default-label: main                                      # 기본 브랜치(label)명 (예: main/master)
           search-paths: config
@@ -17,7 +18,8 @@ spring:
 #          password: [password]
 #        encrypt:
 #          enabled: false
-
+        native:
+          search-locations: file:///C:/Work/local-git-repo
 management:
   endpoints:
     web:

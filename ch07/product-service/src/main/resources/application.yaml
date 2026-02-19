@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: product-service
+  config:
+    import: optional:configserver:http://127.0.0.1:8888
+  profiles:
+    active: dev
   h2:
     console:
       enabled: true
@@ -36,3 +40,14 @@ greeting:
 logging:
   level:
     org.springframework.security: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health
+          - beans
+          - info
+          - busrefresh
