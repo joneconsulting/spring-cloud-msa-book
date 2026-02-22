@@ -19,7 +19,7 @@ spring:
 #        encrypt:
 #          enabled: false
         native:
-          search-locations: file:///C:/Work/local-git-repo
+          search-locations: file:///Users/edowon/Desktop/local-git-repo
 management:
   endpoints:
     web:
