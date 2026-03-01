@@ -4,11 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae8ffdbd-ee85-4b14-af36-f6b3fe06c8bb" name="Changes" comment="">
+    <list default="true" id="ae8ffdbd-ee85-4b14-af36-f6b3fe06c8bb" name="Changes" comment="Update config server samples">
       <change beforePath="$PROJECT_DIR$/../ch04/user-service/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/../ch04/user-service/mvnw" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ch05/apigateway-service/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/../ch05/apigateway-service/mvnw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ch06/.idea/pom.xml.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../ch06/.idea/pom.xml.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ch06/.idea/workspace-dowon-thinkpad.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ch06/.idea/workspace-dowon-thinkpad.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ch06/payment-service/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/../ch06/payment-service/mvnw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/pom.xml.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/pom.xml.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/payment-service/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/payment-service/mvnw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace-dowon-thinkpad.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace-dowon-thinkpad.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +40,7 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://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@github.com/joneconsulting/spring-cloud-msa-book.git&quot;,
+    &quot;url&quot;: &quot;git@github.com:joneconsulting/spring-cloud-msa-book.git&quot;,
     &quot;accountId&quot;: &quot;a33902c3-5586-4c04-ad55-856c7fea49ed&quot;
   }
 }</component>
@@ -76,10 +80,16 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Application.ApigatewayServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ConfigServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Application.PaymentServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Maven.apigateway-service [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.config-server [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.config-server [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.config-server [package].executor&quot;: &quot;Run&quot;,
     &quot;Maven.new-toy-msa [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.new-toy-msa [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.new-toy-msa [deploy].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.new-toy-msa [install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.new-toy-msa [package].executor&quot;: &quot;Run&quot;,
     &quot;Maven.order-service [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.order-service [compile].executor&quot;: &quot;Run&quot;,
@@ -90,6 +100,9 @@
     &quot;Maven.product-service [install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.product-service [package].executor&quot;: &quot;Run&quot;,
     &quot;Maven.product-service [validate].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.service-discovery [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.service-discovery [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.service-discovery [package].executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
@@ -111,13 +124,13 @@
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/zitan/OneDrive/61.교재/2.springcloud/04.실습예제/spring-cloud-msa-book/ch06/pom.xml&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/zitan/OneDrive/61.교재/2.springcloud/04.실습예제/spring-cloud-msa-book/ch07/pom.xml&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;모듈&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.24284667&quot;,
     &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
@@ -125,12 +138,15 @@
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;,
     &quot;애플리케이션.ApigatewayServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;애플리케이션.ConfigServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;애플리케이션.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;애플리케이션.ServiceDiscoveryApplication.executor&quot;: &quot;Run&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/config-server/src/main/resources" />
+      <recent name="$PROJECT_DIR$/product-service/src/main/resources" />
       <recent name="$PROJECT_DIR$/payment-service/src/main/resources" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -149,14 +165,39 @@
         <option value="SpringBootApplicationConfigurationType" />
       </set>
     </option>
+    <option name="configurationStatuses">
+      <map>
+        <entry key="SpringBootApplicationConfigurationType">
+          <value>
+            <map>
+              <entry key="ProductServiceApplication" value="STOPPED" />
+              <entry key="ServiceDiscoveryApplication" value="STOPPED" />
+            </map>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.ApigatewayServiceApplication">
+  <component name="RunManager" selected="Spring Boot.ProductServiceApplication">
     <configuration name="ApigatewayServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.apigatewayservice.ApigatewayServiceApplication" />
       <module name="apigateway-service" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.example.apigatewayservice.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConfigServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.example.configservice.ConfigServiceApplication" />
+      <module name="config-server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.configservice.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -190,10 +231,9 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ApigatewayServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
-      <module name="apigateway-service" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.apigatewayservice.ApigatewayServiceApplication" />
+    <configuration name="ConfigServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="config-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.configservice.ConfigServiceApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -230,12 +270,13 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Spring Boot.ApigatewayServiceApplication" />
+      <item itemvalue="Spring Boot.ConfigServiceApplication" />
       <item itemvalue="Spring Boot.OrderServiceApplication" />
       <item itemvalue="Spring Boot.PaymentServiceApplication" />
       <item itemvalue="Spring Boot.ProductServiceApplication" />
       <item itemvalue="Spring Boot.ServiceDiscoveryApplication" />
       <item itemvalue="애플리케이션.ApigatewayServiceApplication" />
+      <item itemvalue="애플리케이션.ConfigServiceApplication" />
       <item itemvalue="애플리케이션.ProductServiceApplication" />
       <item itemvalue="애플리케이션.ServiceDiscoveryApplication" />
     </list>
@@ -260,12 +301,37 @@
       <workItem from="1769467083413" duration="2462000" />
       <workItem from="1769469567734" duration="14325000" />
       <workItem from="1769612089172" duration="275000" />
-      <workItem from="1769612614663" duration="3927000" />
+      <workItem from="1769612614663" duration="4257000" />
+      <workItem from="1770192867936" duration="867000" />
+      <workItem from="1770196139152" duration="5788000" />
+      <workItem from="1770275605691" duration="685000" />
+      <workItem from="1770276314866" duration="925000" />
+      <workItem from="1770335967946" duration="43000" />
+      <workItem from="1770336076255" duration="19009000" />
+      <workItem from="1770611989223" duration="11508000" />
+      <workItem from="1770851341107" duration="3161000" />
+      <workItem from="1770876613212" duration="11394000" />
+      <workItem from="1771476005413" duration="10011000" />
+      <workItem from="1771516151976" duration="257000" />
+      <workItem from="1771516445328" duration="12547000" />
     </task>
+    <task id="LOCAL-00001" summary="Update config server samples">
+      <option name="closed" value="true" />
+      <created>1771544213212</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1771544213213</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Update config server samples" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update config server samples" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
