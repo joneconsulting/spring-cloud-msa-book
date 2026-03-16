@@ -1,0 +1,5 @@
+greeting:
+  message: This is an user service on DEV env. (Config server's user-service-dev.yaml)
+
+gateway:
+  ip: 192.168.0.100
