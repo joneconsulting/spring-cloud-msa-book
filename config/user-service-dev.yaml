@@ -7,4 +7,4 @@ gateway:
 token:
   key: my_secret_token_key_abcdefghijklnopqrstuvwxyz
   expiration-time: 36000000 # 10 hours in milliseconds
-  
+   
