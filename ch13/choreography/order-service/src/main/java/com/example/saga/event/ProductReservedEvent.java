@@ -1,10 +1,7 @@
 package com.example.saga.event;
 
-import lombok.Getter;
-
 import java.time.Instant;
 
-@Getter
 public class ProductReservedEvent {
     private String orderId;
     private String paymentId;
@@ -18,5 +15,13 @@ public class ProductReservedEvent {
         this.orderId = orderId;
         this.productId = productId;
         this.currentTime = Instant.now();
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public Instant currentTime() {
+        return null;
     }
 }
