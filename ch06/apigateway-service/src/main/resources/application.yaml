@@ -1,0 +1,53 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  key: abcsedfghijklmnopqrstuvwxyz0123456789 # 변경가능합니다.
+
+spring:
+  application:
+    name: apigateway-service
+  cloud:
+    gateway:
+      server:
+        webflux:
+          default-filters:
+            - name: GlobalFilter
+              args:
+                baseMessage: Spring Cloud Gateway WebFlux Global Filter
+                preLogger: true
+                postLogger: true
+          routes:
+            - id: product-service-route
+              uri: lb://PRODUCT-SERVICE
+              predicates:
+                - Path=/product-service/**
+            - id: order-service-route
+              uri: lb://ORDER-SERVICE
+              predicates:
+                - Path=/order-service/**
+            - id: payment-service-route
+              uri: lb://PAYMENT-SERVICE
+              predicates:
+                - Path=/payment-service/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health
+          - beans
+          - info
+          - httpexchanges
+          - busrefresh

@@ -1,0 +1,36 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  profiles:
+#    active: git
+    active: native
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    bus:
+      enabled: true
+    config:
+      server:
+        git:
+          uri: https://github.com/joneconsulting/spring-cloud-msa-book # 설정들이 저장된 Git 리포지토리 경로
+          default-label: main                                      # 기본 브랜치(label)명 (예: main/master)
+          search-paths: config
+        native:
+#          search-locations: file:///Users/edowon/Desktop/local-git-repo # macOS
+          search-locations: file:///C:/work/local-git-repo # Windows
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health
+          - beans
+          - info
+          - busrefresh

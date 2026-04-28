@@ -1,0 +1,5 @@
+greeting:
+  message: This is a product service on DEV env. (Config server's product-service-dev.yaml)
+
+gateway:
+  ip: 192.168.0.100

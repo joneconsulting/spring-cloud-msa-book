@@ -1,0 +1,8 @@
+welcome:
+  message: This is a default welcome message from PROD env. (Config server's application.yaml)
+
+greeting:
+  message: This is a simple e-commerce on PROD env. (Config server's application.yaml)
+
+gateway:
+  ip: 172.18.0.1

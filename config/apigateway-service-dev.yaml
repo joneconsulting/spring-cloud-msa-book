@@ -1,0 +1,9 @@
+greeting:
+  message: This is an apigateway service on DEV env. (Config server's apigateway-service-dev.yaml)
+
+gateway:
+  ip: 192.168.0.100
+
+token:
+  key: my_secret_token_key_abcdefghijklnopqrstuvwxyz
+  expiration-time: 36000000 # 10 hours in milliseconds
