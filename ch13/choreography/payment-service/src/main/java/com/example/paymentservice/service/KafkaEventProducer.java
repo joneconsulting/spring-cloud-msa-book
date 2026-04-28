@@ -7,11 +7,11 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class KafkaCommandProducer {
+public class KafkaEventProducer {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public KafkaCommandProducer(KafkaTemplate<String, Object> kafkaTemplate) {
+    public KafkaEventProducer(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
@@ -19,7 +19,7 @@ public class KafkaCommandProducer {
         kafkaTemplate.send(Topics.PAYMENT_EVENT, event);
     }
 
-    public void cancelPaymentCommand(PaymentFailedEvent event) {
+    public void cancelPaymentEvent(PaymentFailedEvent event) {
         kafkaTemplate.send(Topics.PAYMENT_FAILED_EVENT, event);
     }
 }

@@ -5,11 +5,11 @@ import com.example.paymentservice.config.Topics;
 import com.example.paymentservice.dto.PaymentDto;
 import com.example.paymentservice.jpa.PaymentEntity;
 import com.example.paymentservice.jpa.PaymentRepository;
-import com.example.paymentservice.service.KafkaCommandProducer;
-import com.example.saga.command.CancelPaymentCommand;
-import com.example.saga.command.ProcessPaymentCommand;
+import com.example.paymentservice.service.KafkaEventProducer;
+import com.example.saga.event.CancelPaymentEvent;
 import com.example.saga.event.PaymentFailedEvent;
 import com.example.saga.event.PaymentSucceededEvent;
+import com.example.saga.event.ProcessPaymentEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -23,25 +23,25 @@ import java.util.UUID;
 @Slf4j
 public class PaymentEventHandler {
     private PaymentRepository paymentRepository;
-    private KafkaCommandProducer kafkaCommandProducer;
+    private KafkaEventProducer kafkaEventProducer;
 
     private ModelMapper mapper;
 
     public PaymentEventHandler(PaymentRepository paymentRepository,
-                               KafkaCommandProducer kafkaCommandProducer) {
+                               KafkaEventProducer kafkaEventProducer) {
         this.paymentRepository = paymentRepository;
-        this.kafkaCommandProducer = kafkaCommandProducer;
+        this.kafkaEventProducer = kafkaEventProducer;
 
         mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
     }
 
-    @KafkaListener(topics = Topics.PAYMENT_COMMAND, groupId = "order-service-group")
+    @KafkaListener(topics = Topics.ORDER_EVENT, groupId = "order-service-group")
     @Transactional
-    public void handlePaymentCommand(ProcessPaymentCommand cmd) {
+    public void handleOrderEvent(ProcessPaymentEvent cmd) {
         if (cmd.totalPrice() > 100_000) { // 금액이 100,000원이 넘으로 잔액부족으로 오류 발생
             PaymentFailedEvent failedEvent = new PaymentFailedEvent(cmd.userId(), cmd.orderId(), "Insufficient balance");
-            kafkaCommandProducer.cancelPaymentCommand(failedEvent);
+            kafkaEventProducer.cancelPaymentEvent(failedEvent);
 
             log.error("Payment failed due to insufficient balance: {}", cmd.orderId());
         } else {
@@ -57,15 +57,15 @@ public class PaymentEventHandler {
             paymentRepository.save(paymentEntity);
 
             PaymentSucceededEvent succeededEvent = new PaymentSucceededEvent(cmd.userId(), paymentEntity.getPaymentId(), cmd.orderId(), cmd.productId(), cmd.qty());
-            kafkaCommandProducer.successPaymentEvent(succeededEvent);
+            kafkaEventProducer.successPaymentEvent(succeededEvent);
 
             log.info("Payment for the order Id {} was successful.", cmd.orderId());
         }
     }
 
-    @KafkaListener(topics = Topics.PAYMENT_CANCEL_COMMAND, groupId = "order-service-group")
+    @KafkaListener(topics = Topics.ORDER_CANCEL_EVENT, groupId = "order-service-group")
     @Transactional
-    public void handleCancelPaymentCommand(CancelPaymentCommand cmd) {
+    public void handleOrderCancelEvent(CancelPaymentEvent cmd) {
         paymentRepository.findByPaymentId(cmd.paymentId()).ifPresent(payment -> {
             payment.setStatus(PaymentStatus.CANCELLED);
             payment.setReason(cmd.reason());

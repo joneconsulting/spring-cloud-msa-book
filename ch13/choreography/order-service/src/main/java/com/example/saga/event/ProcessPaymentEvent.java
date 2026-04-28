@@ -1,6 +1,6 @@
-package com.example.saga.command;
+package com.example.saga.event;
 
-public record ProcessPaymentCommand(
+public record ProcessPaymentEvent(
     String userId,
     String orderId,
     String productId,

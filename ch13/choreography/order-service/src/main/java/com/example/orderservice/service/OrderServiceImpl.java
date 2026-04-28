@@ -4,7 +4,7 @@ import com.example.orderservice.config.OrderStatus;
 import com.example.orderservice.dto.OrderDto;
 import com.example.orderservice.jpa.OrderEntity;
 import com.example.orderservice.jpa.OrderRepository;
-import com.example.saga.command.ProcessPaymentCommand;
+import com.example.saga.event.ProcessPaymentEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -19,23 +19,23 @@ public class OrderServiceImpl implements OrderService {
     OrderRepository orderRepository;
 
     /* [ch13] */
-    KafkaCommandProducer kafkaCommandProducer;
+    KafkaEventProducer kafkaEventProducer;
 
     /* [deleted] */
 //    PaymentServiceClient paymentServiceClient;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
-                            KafkaCommandProducer kafkaCommandProducer) {
+                            KafkaEventProducer kafkaEventProducer) {
         this.orderRepository = orderRepository;
         /* [ch13] */
-        this.kafkaCommandProducer = kafkaCommandProducer;
+        this.kafkaEventProducer = kafkaEventProducer;
         /* [deleted] */
 //        this.paymentServiceClient = paymentServiceClient;
     }
 
     @Override
-    public ProcessPaymentCommand createOrder(OrderDto orderDto) {
+    public ProcessPaymentEvent createOrder(OrderDto orderDto) {
         log.info("Requested an order from {}", orderDto.getUserId());
 
         ModelMapper mapper = new ModelMapper();
@@ -46,14 +46,14 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(orderEntity);
 
-        // [ch13] Publish a ProcessPaymentCommand to notify other services
-        ProcessPaymentCommand event = new ProcessPaymentCommand(
+        // [ch13] Publish a ProcessPaymentEvent to notify other services
+        ProcessPaymentEvent event = new ProcessPaymentEvent(
                 orderEntity.getUserId(),
                 orderEntity.getOrderId(), orderEntity.getProductId(),
                 orderEntity.getQty(), orderEntity.getTotalPrice(),
                 orderEntity.isSimulateCancel());
 
-        kafkaCommandProducer.processPaymentCommand(event);
+        kafkaEventProducer.processPaymentEvent(event);
 
         log.info("Order Created Successfully. Order ID: {}", orderEntity.getOrderId());
 
