@@ -68,7 +68,7 @@ public class OrderEventHandler {
     @Transactional
     public void handleProductEvent(ProductReservationFailedEvent event) {
         orderRepository.findByOrderId(event.getOrderId()).ifPresent(order -> {
-            // 재고 차감 실패 이벤트 수식
+            // 재고 차감 실패 이벤트 수신
             CancelPaymentCommand command = new CancelPaymentCommand(order.getUserId(),
                     order.getOrderId(), event.getPaymentId(), event.getReason());       // "Insufficient stock"
             kafkaCommandProducer.cancelPaymentCommand(command);
