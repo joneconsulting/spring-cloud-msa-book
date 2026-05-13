@@ -56,16 +56,15 @@ public class WebSecurityNew {
         http.authorizeHttpRequests((authz) -> authz
                         .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/users", "POST")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/users")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/welcome")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/health-check")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                         .requestMatchers("/**").access(
                                 new WebExpressionAuthorizationManager(
                                         "hasIpAddress('127.0.0.1') or hasIpAddress('::1')" +
-                                                " or hasIpAddress('10.90.11.120') or hasIpAddress('10.90.11.120/32')")) // host pc ip address
+                                                " or hasIpAddress('192.168.0.244') or hasIpAddress('192.168.0.244/32')")) // host pc ip address
                         .anyRequest().authenticated()
                 )
                 .authenticationManager(authenticationManager)

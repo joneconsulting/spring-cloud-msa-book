@@ -43,10 +43,10 @@ public class OrderService {
         this.restTemplate = restTemplate;
     }
 
-    @Retry(name = "orderService", fallbackMethod = "orderListFallback")
-    @CircuitBreaker(name = "orderService", fallbackMethod = "orderListFallback")
-    @Bulkhead(name = "orderService", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "orderListFallback")
-    @TimeLimiter(name = "orderService")  // CompletableFuture 반환 메서드에서만 타임아웃 적용
+    @Retry(name = "orderServiceRetry", fallbackMethod = "orderListFallback")
+    @CircuitBreaker(name = "orderServiceCircuitBreaker", fallbackMethod = "orderListFallback")
+    @Bulkhead(name = "orderServiceBulkhead", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "orderListFallback")
+    @TimeLimiter(name = "orderServiceTimeLimiter")  // CompletableFuture 반환 메서드에서만 타임아웃 적용
     public CompletableFuture<List<ResponseOrder>> getOrderListByUserId(String userId) {
         log.info("Before call orders microservice: userId [{}]", userId);
         String orderUrl = String.format("http://127.0.0.1:8082/%s/orders", userId);
