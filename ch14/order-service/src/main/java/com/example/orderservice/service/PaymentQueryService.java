@@ -20,8 +20,8 @@ public class PaymentQueryService {
     private final RestTemplate restTemplate;
     private final PaymentServiceClient paymentServiceClient;
 
-    @Retry(name = "paymentServiceRetry", fallbackMethod = "orderListFallback")
-    @CircuitBreaker(name = "paymentServiceCircuitBreaker", fallbackMethod = "orderListFallback")
+    @Retry(name = "paymentServiceRetry", fallbackMethod = "getPaymentInfoFallback")
+    @CircuitBreaker(name = "paymentServiceCircuitBreaker", fallbackMethod = "getPaymentInfoFallback")
     @TimeLimiter(name = "paymentServiceTimeLimiter")  // CompletableFuture 반환 메서드에서만 타임아웃 적용
     public CompletableFuture<ResponsePayment> getPaymentInfo(String orderId) {
         log.info("Before call payment microservice: orderId [{}]", orderId);
@@ -32,7 +32,7 @@ public class PaymentQueryService {
         return CompletableFuture.completedFuture(responsePayment);
     }
 
-    public CompletableFuture<ResponsePayment> orderListFallback(String orderId, Throwable ex) {
+    public CompletableFuture<ResponsePayment> getPaymentInfoFallback(String orderId, Throwable ex) {
         log.error("Fallback for payment: order_id: {}, {}", orderId, ex.getMessage());
 
         ResponsePayment fallbackResponse = ResponsePayment.builder()
@@ -46,7 +46,9 @@ public class PaymentQueryService {
     }
 
     /* bulkhead demo */
-    @Bulkhead(name = "paymentServiceBulkhead", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "bulkheadFallbackPayment")
+    @Bulkhead(name = "paymentServiceBulkhead",
+              type = Bulkhead.Type.THREADPOOL,
+              fallbackMethod = "bulkheadFallbackPayment")
     public CompletableFuture<String> bulkheadPaymentAsync(boolean simulateMode) throws InterruptedException {
         log.info("Processing payment test for bulkhead: simulateMode={}", simulateMode);
 
