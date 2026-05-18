@@ -6,21 +6,12 @@ import com.example.orderservice.dto.OrderDto;
 import com.example.orderservice.jpa.OrderEntity;
 import com.example.orderservice.jpa.OrderRepository;
 import com.example.orderservice.vo.RequestPayment;
-import com.example.orderservice.vo.ResponseOrder;
 import com.example.orderservice.vo.ResponsePayment;
-import io.github.resilience4j.bulkhead.annotation.Bulkhead;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +46,7 @@ public class OrderServiceImpl implements OrderService {
         orderEntity.setStatus(OrderStatus.COMPLETED);
         orderRepository.save(orderEntity);
 
+        /* payment */
         RequestPayment requestPayment = new RequestPayment(orderDto.getOrderId()
                 ,orderDto.getUserId(), orderDto.getTotalPrice(), "BANK");
         ResponsePayment responsePayment = paymentServiceClient.createPayment(requestPayment);
@@ -82,16 +74,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto getOrderByOrderId(String orderId) {
         Optional<OrderEntity> orderEntity = orderRepository.findByOrderId(orderId);
-        OrderDto returnValue = new ModelMapper().map(orderEntity.get(), OrderDto.class);
+        OrderDto orderDto = new ModelMapper().map(orderEntity.get(), OrderDto.class);
 
         CompletableFuture<ResponsePayment> responsePayment = paymentQueryService.getPaymentInfo(orderId);
         try {
             ResponsePayment payment = responsePayment.get();
 
             if (payment != null) {
-                returnValue.setPaymentMethod(payment.getMethod());
-                returnValue.setPaymentStatus(payment.getStatus());
-                returnValue.setPaymentDate(payment.getCreatedAt());
+                orderDto.setPaymentMethod(payment.getMethod());
+                orderDto.setPaymentStatus(payment.getStatus());
+                orderDto.setPaymentDate(payment.getCreatedAt());
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -99,6 +91,6 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException(e);
         }
 
-        return returnValue;
+        return orderDto;
     }
 }

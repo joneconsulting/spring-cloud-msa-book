@@ -2,7 +2,6 @@ package com.example.orderservice.controller;
 
 import com.example.orderservice.dto.OrderDto;
 import com.example.orderservice.service.OrderService;
-import com.example.orderservice.service.PaymentQueryService;
 import com.example.orderservice.vo.RequestOrder;
 import com.example.orderservice.vo.ResponseOrder;
 import lombok.extern.slf4j.Slf4j;
@@ -17,23 +16,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
-@RestController
-@RequestMapping("/order-service")
+//@RestController
+//@RequestMapping("/order-service")
 @Slf4j
-public class OrderController {
-    Environment env;
-    OrderService orderService;
-    PaymentQueryService paymentQueryService;
+public class OrderController_exec14_1 {
+    private final Environment env;
+    private final OrderService orderService;
 
-    @Autowired
-    public OrderController(Environment env,
-                           OrderService orderService,
-                           PaymentQueryService paymentQueryService) {
+//    private final OrderProducerService orderProducerService;
+
+//    @Autowired
+    public OrderController_exec14_1(Environment env
+                           , OrderService orderService
+//                           , OrderProducerService orderProducerService
+    ) {
         this.env = env;
         this.orderService = orderService;
-        this.paymentQueryService = paymentQueryService;
+//        this.orderProducerService = orderProducerService;
     }
 
     @GetMapping("/health-check")
@@ -41,6 +41,11 @@ public class OrderController {
         return String.format("It's Working in Order Service on LOCAL PORT %s (SERVER PORT %s)",
                 env.getProperty("local.server.port"),
                 env.getProperty("server.port"));
+    }
+
+    @GetMapping("/welcome")
+    public String welcome() {
+        return env.getProperty("greeting.message");
     }
 
     @PostMapping("/{userId}/orders")
@@ -52,12 +57,19 @@ public class OrderController {
 
         OrderDto orderDto = mapper.map(orderDetails, OrderDto.class);
         orderDto.setUserId(userId);
-        orderDto.setOrderId(UUID.randomUUID().toString());
-        orderDto.setTotalPrice(orderDetails.getQty() * orderDetails.getUnitPrice());
-
         /* jpa */
         OrderDto createdOrder = orderService.createOrder(orderDto);
         ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
+
+        /* kafka */
+        orderDto.setOrderId(UUID.randomUUID().toString());
+        orderDto.setTotalPrice(orderDetails.getQty() * orderDetails.getUnitPrice());
+
+//        /* send this order to the kafka */
+//        orderProducerService.sendOrder(orderDto);
+//
+//        /* send this order for EDA */
+//        orderProducerService.createOrder4EDA(orderDto);
 
         log.info("After added orders data");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
@@ -66,23 +78,15 @@ public class OrderController {
     @GetMapping("/{userId}/orders")
     public ResponseEntity<List<ResponseOrder>> getOrder(@PathVariable("userId") String userId) throws Exception {
         log.info("Before retrieve orders data");
-
-        List<OrderDto> orderList = orderService.getOrdersByUserId(userId);
+        Iterable<OrderDto> orderList = orderService.getOrdersByUserId(userId);
 
         List<ResponseOrder> result = new ArrayList<>();
         orderList.forEach(v -> {
             result.add(new ModelMapper().map(v, ResponseOrder.class));
         });
 
-        log.info("After retrieved orders data");
+        log.info("Add retrieved orders data");
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
-    }
-
-    @GetMapping("/bulkhead-demo")
-    public CompletableFuture<ResponseEntity<String>> testBulkhead(@RequestParam(defaultValue = "false") boolean simulateMode) throws Exception {
-
-        return paymentQueryService.bulkheadPaymentAsync(simulateMode)
-                .thenApply(result -> ResponseEntity.status(HttpStatus.OK).body(result));
     }
 }
