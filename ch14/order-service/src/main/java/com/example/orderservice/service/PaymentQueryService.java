@@ -17,22 +17,44 @@ import java.util.concurrent.CompletableFuture;
 @Service
 @RequiredArgsConstructor
 public class PaymentQueryService {
-    private final RestTemplate restTemplate;
     private final PaymentServiceClient paymentServiceClient;
+
+//    @Retry(name = "paymentServiceRetry", fallbackMethod = "getPaymentInfoFallback")
+//    @CircuitBreaker(name = "paymentServiceCircuitBreaker", fallbackMethod = "getPaymentInfoFallback")
+//    @TimeLimiter(name = "paymentServiceTimeLimiter")  // CompletableFuture 반환 메서드에서만 타임아웃 적용
+//    public CompletableFuture<ResponsePayment> getPaymentInfo(String orderId) {
+//        log.info("Before call payment microservice: orderId [{}]", orderId);
+//        ResponsePayment responsePayment = paymentServiceClient.getPayment(orderId);
+//
+//        log.info("After called payment microservice using open-feign");
+//
+//        return CompletableFuture.completedFuture(responsePayment);
+//    }
 
     @Retry(name = "paymentServiceRetry", fallbackMethod = "getPaymentInfoFallback")
     @CircuitBreaker(name = "paymentServiceCircuitBreaker", fallbackMethod = "getPaymentInfoFallback")
-    @TimeLimiter(name = "paymentServiceTimeLimiter")  // CompletableFuture 반환 메서드에서만 타임아웃 적용
-    public CompletableFuture<ResponsePayment> getPaymentInfo(String orderId) {
+    public ResponsePayment getPaymentInfo(String orderId) {
         log.info("Before call payment microservice: orderId [{}]", orderId);
         ResponsePayment responsePayment = paymentServiceClient.getPayment(orderId);
 
         log.info("After called payment microservice using open-feign");
 
-        return CompletableFuture.completedFuture(responsePayment);
+        return responsePayment;
     }
 
-    public CompletableFuture<ResponsePayment> getPaymentInfoFallback(String orderId, Throwable ex) {
+//    public CompletableFuture<ResponsePayment> getPaymentInfoFallback(String orderId, Throwable ex) {
+//        log.error("Fallback for payment: order_id: {}, {}", orderId, ex.getMessage());
+//
+//        ResponsePayment fallbackResponse = ResponsePayment.builder()
+//                .orderId(orderId)
+//                .status("PAYMENT_UNKNOWN")
+//                .method(null)
+//                .message("The payment service is temporarily unavailable.")
+//                .build();
+//
+//        return CompletableFuture.completedFuture(fallbackResponse);
+//    }
+    public ResponsePayment getPaymentInfoFallback(String orderId, Throwable ex) {
         log.error("Fallback for payment: order_id: {}, {}", orderId, ex.getMessage());
 
         ResponsePayment fallbackResponse = ResponsePayment.builder()
@@ -42,7 +64,7 @@ public class PaymentQueryService {
                 .message("The payment service is temporarily unavailable.")
                 .build();
 
-        return CompletableFuture.completedFuture(fallbackResponse);
+        return fallbackResponse;
     }
 
     /* bulkhead demo */

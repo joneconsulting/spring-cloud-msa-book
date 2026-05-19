@@ -30,13 +30,22 @@ logging:
   level:
     com.example.orderservice: DEBUG
   pattern:
-    correlation: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+    level: '%5p [${spring.application.name:},traceId=%X{traceId:-},spanId=%X{spanId:-}]'
 
 management:
   endpoints:
     web:
       exposure:
-        include: health, httptrace, info, metrics, prometheus
+        include: refresh, health, beans, info, busrefresh, metrics, prometheus
+  tracing:
+    sampling:
+      probability: 1.0      # 1.0이면 100% 샘플링 (개발/테스트 환경에서 유용)
+    propagation:
+      consume: w3c
+      produce: w3c
+    export:
+      zipkin:
+        endpoint: http://localhost:9411/api/v2/spans
 
 feign:
   circuitbreaker:

@@ -76,18 +76,22 @@ public class OrderServiceImpl implements OrderService {
         Optional<OrderEntity> orderEntity = orderRepository.findByOrderId(orderId);
         OrderDto orderDto = new ModelMapper().map(orderEntity.get(), OrderDto.class);
 
-        CompletableFuture<ResponsePayment> responsePayment = paymentQueryService.getPaymentInfo(orderId);
+//        CompletableFuture<ResponsePayment> responsePayment = paymentQueryService.getPaymentInfo(orderId);
+        ResponsePayment payment = paymentQueryService.getPaymentInfo(orderId);
         try {
-            ResponsePayment payment = responsePayment.get();
+//            ResponsePayment payment = responsePayment.get();
 
             if (payment != null) {
                 orderDto.setPaymentMethod(payment.getMethod());
                 orderDto.setPaymentStatus(payment.getStatus());
                 orderDto.setPaymentDate(payment.getCreatedAt());
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        } catch (ExecutionException e) {
+//            throw new RuntimeException(e);
+//        }
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 

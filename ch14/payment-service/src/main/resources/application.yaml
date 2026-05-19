@@ -4,10 +4,6 @@ server:
 spring:
   application:
     name: payment-service
-  config:
-    import: optional:configserver:http://127.0.0.1:8888
-  profiles:
-    active: dev
   h2:
     console:
       enabled: true
@@ -38,9 +34,9 @@ eureka:
 
 logging:
   level:
-    org.springframework.security: DEBUG
+    com.example.paymentservice: DEBUG
   pattern:
-    level: "%5p [${spring.application.name},traceId=%X{traceId},spanId=%X{spanId}]"
+    level: "%5p [${spring.application.name},traceId=%X{traceId:-},spanId=%X{spanId:-}]"
 
 management:
   endpoints:
@@ -48,8 +44,18 @@ management:
       exposure:
         include:
           - refresh
-          - health
+          - healthㅌ
           - beans
           - info
           - busrefresh
-          - env
+          - metrics
+          - prometheus
+  tracing:
+    sampling:
+      probability: 1.0      # 1.0이면 100% 샘플링 (개발/테스트 환경에서 유용)
+    propagation:
+      consume: w3c
+      produce: w3c
+    export:
+      zipkin:
+        endpoint: http://localhost:9411/api/v2/spans
