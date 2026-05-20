@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "payments")
-public class PaymentEntity { // implements Serializable {
+public class PaymentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
