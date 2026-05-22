@@ -22,8 +22,8 @@ spring:
           default-label: main                                      # 기본 브랜치(label)명 (예: main/master)
           search-paths: config
         native:
-#          search-locations: file:///Users/edowon/Desktop/local-git-repo # macOS
-          search-locations: file:///C:/work/local-git-repo # Windows
+          search-locations: file:///Users/edowon/Desktop/local-git-repo # macOS
+#          search-locations: file:///C:/work/local-git-repo # Windows
 management:
   endpoints:
     web:
