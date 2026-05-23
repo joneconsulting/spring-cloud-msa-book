@@ -2,10 +2,10 @@ server:
   port: 8888
 
 spring:
-  security:
-    user:
-      name: configuser
-      password: configpass
+#  security:
+#    user:
+#      name: configuser
+#      password: configpass
   application:
     name: config-server
   profiles:
