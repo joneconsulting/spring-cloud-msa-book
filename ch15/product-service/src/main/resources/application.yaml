@@ -2,6 +2,10 @@ server:
   port: 8081
 
 spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8088 # Admin Server 주소 (예: 포트 8088)
   application:
     name: product-service
   config:
@@ -50,6 +54,15 @@ greeting:
 logging:
   level:
     org.springframework.security: DEBUG
+  pattern:
+    console: >
+      {"timestamp":"%d{yyyy-MM-dd HH:mm:ss.SSS}",
+       "level":"%p",
+       "thread":"%t",
+       "logger":"%c",
+       "message":"%m",
+       "traceId":"%X{traceId}",
+       "spanId":"%X{spanId}"}%n
 
 management:
   endpoints:
@@ -61,3 +74,8 @@ management:
           - beans
           - info
           - busrefresh
+          - prometheus
+          - metrics
+  endpoint:
+    health:
+      show-details: always # 헬스 체크 시 상세 정보까지 노출

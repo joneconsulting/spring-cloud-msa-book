@@ -1,0 +1,14 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: service-discovery-a
+
+eureka:
+  client:
+    service-url:
+#      defaultZone: http://host.docker.internal:8762/eureka/
+      defaultZone: http://dowon-thinkpad:8762/eureka/
+  instance:
+    hostname: localhost

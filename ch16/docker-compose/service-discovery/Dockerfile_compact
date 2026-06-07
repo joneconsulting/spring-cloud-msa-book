@@ -1,0 +1,51 @@
+# ---------------------------------------------------------------------
+# Stage 1: builder - Maven 빌드 및 Spring Boot JAR 추출
+# ---------------------------------------------------------------------
+FROM eclipse-temurin:21-jdk-alpine AS builder
+WORKDIR /app
+
+# Maven Wrapper와 설정 복사 및 의존성 프리캐시 빌드
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+RUN ./mvnw dependency:go-offline
+
+# 애플리케이션 소스 복사 및 빌드 (테스트 생략)
+COPY src/ ./src
+RUN ./mvnw clean package -DskipTests
+
+# 빌드 산출물 JAR를 Layered 형태로 디렉토리 추출
+RUN java -Djarmode=layertools -jar target/*.jar extract --destination extracted
+
+# ---------------------------------------------------------------------
+# Stage 2: jre-builder - jlink를 사용한 Minimal JRE 생성
+# ---------------------------------------------------------------------
+FROM eclipse-temurin:21-jdk-alpine AS jre-builder
+# 필요한 모듈만 포함하여 JRE 이미지 생성 (예: base, logging, SQL 등)
+RUN jlink --compress=2 --strip-debug --no-header-files --no-man-pages \
+         --module-path $JAVA_HOME/jmods \
+         --add-modules java.base,java.logging,java.sql,java.desktop,java.naming,java.management,jdk.crypto.ec,java.security.jgss,java.instrument,jdk.unsupported \
+         --output /opt/jre-minimal
+
+# ---------------------------------------------------------------------
+# Stage 3: final - 경량 Alpine 기반 최종 런타임 이미지
+# ---------------------------------------------------------------------
+FROM alpine:3.18 AS final
+# 앞서 생성한 minimal JRE 복사
+COPY --from=jre-builder /opt/jre-minimal /opt/jre
+ENV JAVA_HOME=/opt/jre
+ENV PATH="$JAVA_HOME/bin:$PATH"
+
+# 보안 강화를 위한 비루트(non-root) 사용자 생성
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring
+
+WORKDIR /app
+# Layered JAR에서 추출된 각 layer를 순서대로 복사 (Docker 캐시 활용)
+COPY --from=builder /app/extracted/dependencies/ ./BOOT-INF/lib/
+COPY --from=builder /app/extracted/snapshot-dependencies/ ./BOOT-INF/lib/
+COPY --from=builder /app/extracted/spring-boot-loader/ ./
+COPY --from=builder /app/extracted/application/ ./
+
+# 애플리케이션 실행 명령 (Spring Boot Loader 사용)
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
+EXPOSE 8761

@@ -2,6 +2,8 @@ package com.example.productservice.controller;
 
 import com.example.productservice.model.Product;
 import com.example.productservice.service.ProductService;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +25,19 @@ public class ProductController {
 
     HttpServletRequest request;
 
+    private final Counter viewCounter;
+
     // 컨피그 서버에서 불러온 custom.greeting.message 값을 주입받음
     @Value("${greeting.message}")
     private String greetingMessage;
 
     @Autowired
-    public ProductController(Environment env, ProductService productService, HttpServletRequest request) {
+    public ProductController(Environment env, ProductService productService, HttpServletRequest request,
+                             MeterRegistry meterRegistry) {
         this.env = env;
         this.productService = productService;
         this.request = request;
+        this.viewCounter = meterRegistry.counter("products_view");
     }
 
     @GetMapping("/info")
@@ -54,15 +60,15 @@ public class ProductController {
     // 전체 상품 목록 조회
     @GetMapping("/products")
     public List<Product> getAllProducts() {
+        /* 상품 조회 시 카운터 1 증가 */
+        viewCounter.increment();
+
         Iterable<Product> iterable = productService.getAllProducts();
 
         List<Product> list = new ArrayList<>();
         for (Product item : iterable) {
             list.add(item);
         }
-
-        // Java 8+ 의 경우 아래 방법으로 처리하셔도 됩니다.
-        // iterable.iterator().forEachRemaining(list::add);
 
         return list;
     }

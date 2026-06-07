@@ -1,0 +1,112 @@
+version: '3.8'
+services:
+  # 1. 메시징 브로커 (RabbitMQ) - 스프링 클라우드 버스 및 이벤트 용도
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Mgmt UI
+    networks:
+      my-network:
+  # 2. 메시징 브로커 (Kafka) – order-service, product-service 간의 비동기 통신을 위한 용도
+  broker:
+    image: apache/kafka:latest
+    container_name: broker
+    ports:
+      - "9092:9092"   # Kafka
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    networks:
+      my-network:
+  # 3. 서비스 디스커버리 (Eureka Server)
+  service-discovery:
+    image: edowon0623/service-discovery:1.0
+    container_name: service-discovery
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
+    networks:
+      my-network:
+  # 4. 컨피그 서버 (Config Server)
+  config-service:
+    image: edowon0623/config-service:1.0
+    container_name: config-service
+    ports:
+      - "8888:8888"
+    depends_on:
+      - service-discovery
+      - rabbitmq
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    networks:
+      my-network:
+  # 5. 비즈니스 서비스 - 상품 서비스
+  product-service:
+    image: edowon0623/product-service:1.0
+    container_name: product-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - service-discovery
+      - config-service
+      - broker
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8761/eureka
+      - SPRING_CONFIG_IMPORT= optional:configserver:http://config-service:8888
+      - SERVER_PORT=8081
+      - SPRING_APPLICATION_NAME=product-service
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:9092
+    networks:
+      my-network:
+  # 6. 비즈니스 서비스 - 주문 서비스
+  order-service:
+    image: edowon0623/order-service:1.0
+    container_name: order-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - service-discovery
+      - config-service
+      - broker
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8761/eureka
+      - SPRING_CONFIG_IMPORT= optional:configserver:http://config-service:8888
+      - SERVER_PORT=8082
+      - SPRING_APPLICATION_NAME=order-service
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:9092
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    networks:
+      my-network:
+  # 7. 비즈니스 서비스 - 결제 서비스
+  payment-service:
+    image: edowon0623/payment-service:1.0
+    container_name: payment-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - service-discovery
+      - config-service
+      - broker
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8761/eureka
+      - SPRING_CONFIG_IMPORT= optional:configserver:http://config-service:8888
+      - SERVER_PORT=8083
+      - SPRING_APPLICATION_NAME=payment-service
+    networks:
+      my-network:
+
+networks:
+  my-network:
+    name: my-network
