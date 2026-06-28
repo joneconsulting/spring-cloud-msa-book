@@ -17,7 +17,7 @@
         <module>order-service</module>
         <module>service-discovery</module>
         <module>payment-service</module>
-        <module>config-service</module>
+        <module>config-server</module>
         <module>user-service</module>
     </modules>
     <name>new-toy-msa</name>

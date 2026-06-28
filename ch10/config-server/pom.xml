@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>config-service</artifactId>
+    <artifactId>config-server</artifactId>
     <version>1.0</version>
-    <name>config-service</name>
+    <name>config-server</name>
     <description>configuration server</description>
     <properties>
         <java.version>21</java.version>
