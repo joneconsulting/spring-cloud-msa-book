@@ -40,9 +40,9 @@ services:
     networks:
       my-network:
   # 4. 컨피그 서버 (Config Server)
-  config-service:
-    image: edowon0623/config-service:1.0
-    container_name: config-service
+  config-server:
+    image: edowon0623/config-server:1.0
+    container_name: config-server
     ports:
       - "8888:8888"
     depends_on:
@@ -60,11 +60,11 @@ services:
       - "8081:8081"
     depends_on:
       - service-discovery
-      - config-service
+      - config-server
       - broker
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8761/eureka
-      - SPRING_CONFIG_IMPORT= optional:configserver:http://config-service:8888
+      - SPRING_CONFIG_IMPORT= optional:configserver:http://config-server:8888
       - SERVER_PORT=8081
       - SPRING_APPLICATION_NAME=product-service
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:9092
@@ -78,11 +78,11 @@ services:
       - "8082:8082"
     depends_on:
       - service-discovery
-      - config-service
+      - config-server
       - broker
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8761/eureka
-      - SPRING_CONFIG_IMPORT= optional:configserver:http://config-service:8888
+      - SPRING_CONFIG_IMPORT= optional:configserver:http://config-server:8888
       - SERVER_PORT=8082
       - SPRING_APPLICATION_NAME=order-service
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:9092
@@ -97,11 +97,11 @@ services:
       - "8084:8084"
     depends_on:
       - service-discovery
-      - config-service
+      - config-server
       - broker
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8761/eureka
-      - SPRING_CONFIG_IMPORT= optional:configserver:http://config-service:8888
+      - SPRING_CONFIG_IMPORT= optional:configserver:http://config-server:8888
       - SERVER_PORT=8083
       - SPRING_APPLICATION_NAME=payment-service
     networks:

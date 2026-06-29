@@ -87,12 +87,12 @@
         </dependency>
 
         <!-- Spring boot admin client -->
-        <dependency>
-            <groupId>de.codecentric</groupId>
-            <artifactId>spring-boot-admin-starter-client</artifactId>
-            <version>4.0.4</version>
-            <scope>compile</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.codecentric</groupId>-->
+<!--            <artifactId>spring-boot-admin-starter-client</artifactId>-->
+<!--            <version>4.0.4</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
 
         <!-- logstash -->
         <dependency>
